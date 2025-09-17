@@ -107,7 +107,9 @@
   <!-- Exportar Excel -->
   <div class="content" id="excel">
     <h2>Exportar para Excel</h2>
-    <button onclick="exportarExcel()">Exportar Dados</button>
+    <button onclick="exportarExcel()">Exportar Dados</button><br>
+    <input type="file" id="inputExcel" accept=".xlsx,.xls" />
+    <button type="button" onclick="importarExcel()">Importar do Excel</button>
   </div>
 
   <script>
@@ -274,6 +276,46 @@
       // coloca aqui o link do Excel
       const url = "https://1drv.ms/x/c/2863be5604cde3e6/EcYHIppYro1EhTRyVpXDPi4BwXYek8uma0NTSPPvnEkR6A?e=pmZwtU";
       window.open(url, "_blank"); // abre numa nova aba
+    }
+
+    function importarExcel() {
+      const fileInput = document.getElementById("inputExcel");
+      const file = fileInput.files[0];
+      if (!file) {
+        alert("Por favor selecione um ficheiro Excel.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+
+        // Carregar cada folha, se existir
+        if (workbook.Sheets["Manutencoes"]) {
+          manutencoes = XLSX.utils.sheet_to_json(workbook.Sheets["Manutencoes"]);
+          renderTabela("tabelaNovo", manutencoes, ["empresa","edificio","tipo","data","obs"], "totalNovo");
+        }
+
+        if (workbook.Sheets["Stock"]) {
+          stock = XLSX.utils.sheet_to_json(workbook.Sheets["Stock"]);
+          renderTabela("tabelaStock", stock, ["data","tipo","produto","quantidade"], "totalStock");
+        }
+
+        if (workbook.Sheets["Filtros"]) {
+          filtros = XLSX.utils.sheet_to_json(workbook.Sheets["Filtros"]);
+          renderTabela("tabelaFiltro", filtros, ["empresa","edificio","data"], "totalFiltro");
+        }
+
+        if (workbook.Sheets["Notas"]) {
+          const rows = XLSX.utils.sheet_to_json(workbook.Sheets["Notas"]);
+          notas = rows.map(r => r.Nota); // só precisa do texto
+          renderTabela("tabelaNotas", notas.map(n => ({Nota: n})), ["Nota"], "totalNotas");
+        }
+
+        alert("Dados importados com sucesso!");
+      };
+      reader.readAsArrayBuffer(file);
     }
 
   </script>
