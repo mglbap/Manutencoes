@@ -2,7 +2,7 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Registo de Manutenções</title>
+  <title>Gestão de Manutenções</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; background: #daf0f5; background-image: url("avac.jpg");}
@@ -28,13 +28,15 @@
   </style>
 </head>
 <body>
-  <h1>Registo de Manutenções</h1>
+  <h1>Gestão de Manutenções</h1>
+
+  <!-- Separadores -->
   <div class="tabs">
     <div class="tab active" data-tab="novo">Novo Registo</div>
     <div class="tab" data-tab="stock">Stock Material</div>
     <div class="tab" data-tab="filtros">Filtros</div>
-    <div class="tab" data-tab="nota">Notas</div>
-    <div class="tab" data-tab="excel">Exportar Excel</div>
+    <div class="tab" data-tab="notas">Notas</div>
+    <div class="tab" data-tab="excel">Importar / Exportar Excel</div>
   </div>
 
   <!-- Novo Registo -->
@@ -42,36 +44,30 @@
     <h2>Novo Registo</h2>
     <form id="formNovo">
       <input type="hidden" id="indiceEditarNovo">
-      <label>Empresa:<input type="text" id="empresa" required></label>
-      <label>Edifício:<input type="text" id="edificio" required></label>
-      <label>Tipo de Manutenção:<input type="text" id="tipo" required></label>
-      <label>Data:<input type="date" id="dataManutencao" required></label>
-      <label>Observações:<textarea id="obs"></textarea></label>
+      <label>Empresa: <input type="text" id="empresa" required></label>
+      <label>Edifício: <input type="text" id="edificio" required></label>
+      <label>Tipo: <input type="text" id="tipo" required></label>
+      <label>Data: <input type="date" id="dataNovo" required></label>
+      <label>Observações: <input type="text" id="obs"></label>
       <button type="submit">Guardar</button>
       <button type="button" onclick="resetForm('formNovo')">Cancelar</button>
-
-      <!-- Botão para carregar Excel -->
-      <button type="button" onclick="abrirLink()"> Manutenção Preventiva</button>
     </form>
     <table id="tabelaNovo"><thead><tr><th>Empresa</th><th>Edifício</th><th>Tipo</th><th>Data</th><th>Obs</th></tr></thead><tbody></tbody></table>
     <div id="totalNovo" class="total"></div>
   </div>
 
-  <!-- Stock Material -->
+  <!-- Stock -->
   <div class="content" id="stock">
     <h2>Stock Material</h2>
     <form id="formStock">
       <input type="hidden" id="indiceEditarStock">
-      <label>Data:<input type="date" id="dataStock" required></label>
-      <label>Tipo:<input type="text" id="tipoStock" required></label>
-      <label>Produto:<input type="text" id="produto" required></label>
-      <label>Quantidade:<input type="number" id="quantidade" required></label>
+      <label>Data: <input type="date" id="dataStock" required></label>
+      <label>Tipo: <input type="text" id="tipoStock" required></label>
+      <label>Produto: <input type="text" id="produto" required></label>
+      <label>Quantidade: <input type="number" id="quantidade" required></label>
       <button type="submit">Guardar</button>
       <button type="button" onclick="resetForm('formStock')">Cancelar</button>
-
-      <!-- Botão para carregar Excel -->
-      <button type="button" onclick="openLink()"> Stock UTAs/VCs</button>
-    </form>    
+    </form>
     <table id="tabelaStock"><thead><tr><th>Data</th><th>Tipo</th><th>Produto</th><th>Qtd</th></tr></thead><tbody></tbody></table>
     <div id="totalStock" class="total"></div>
   </div>
@@ -79,41 +75,42 @@
   <!-- Filtros -->
   <div class="content" id="filtros">
     <h2>Filtros</h2>
-    <form id="formFiltros">
-      <label>Empresa:<input type="text" id="filtroEmpresa"></label>
-      <label>Edifício:<input type="text" id="filtroEdificio"></label>
-      <label>Data:<input type="date" id="filtroData"></label>
-      <button type="button" onclick="aplicarFiltros()">Aplicar Filtros</button>
-      <button type="button" onclick="limparFiltros()">Limpar</button>
-    </form>
-    <table id="tabelaFiltros"><thead><tr><th>Empresa</th><th>Edifício</th><th>Tipo</th><th>Data</th><th>Obs</th></tr></thead><tbody></tbody></table>
-    <div id="totalFiltros" class="total"></div>
-  </div>
-
-  <!-- Nota -->
-  <div class="content" id="nota">
-    <h2>Notas</h2>
-    <form id="formNota">
-      <input type="hidden" id="indiceEditarNota">
-      <label>Escreva a sua nota:</label>
-      <textarea id="textoNota" rows="5" required></textarea>
+    <form id="formFiltro">
+      <input type="hidden" id="indiceEditarFiltro">
+      <label>Empresa: <input type="text" id="empresaFiltro" required></label>
+      <label>Edifício: <input type="text" id="edificioFiltro" required></label>
+      <label>Data: <input type="date" id="dataFiltro" required></label>
       <button type="submit">Guardar</button>
-      <button type="button" onclick="resetForm('formNota')">Cancelar</button>
+      <button type="button" onclick="resetForm('formFiltro')">Cancelar</button>
     </form>
-    <table id="tabelaNota"><thead><tr><th>Nota</th></tr></thead><tbody></tbody></table>
-    <div id="totalNota" class="total"></div>
+    <table id="tabelaFiltro"><thead><tr><th>Empresa</th><th>Edifício</th><th>Data</th></tr></thead><tbody></tbody></table>
+    <div id="totalFiltro" class="total"></div>
   </div>
 
-  <!-- Exportar Excel -->
+  <!-- Notas -->
+  <div class="content" id="notas">
+    <h2>Notas</h2>
+    <input type="hidden" id="indiceEditarNota">
+    <textarea id="textoNota" rows="4" cols="247"></textarea><br>
+    <button onclick="guardarNota()">Guardar Nota</button>
+    <button onclick="resetFormNota()">Cancelar</button>
+    <table id="tabelaNotas"><thead><tr><th>Nota</th></tr></thead><tbody></tbody></table>
+    <div id="totalNotas" class="total"></div>
+  </div>
+
+  <!-- Excel -->
   <div class="content" id="excel">
-    <h2>Exportar para Excel</h2>
-    <button onclick="exportarExcel()">Exportar Dados</button><br>
+    <h2>Importar / Exportar Excel</h2>
     <input type="file" id="inputExcel" accept=".xlsx,.xls" />
-    <button type="button" onclick="importarExcel()">Importar do Excel</button>
+    <button onclick="importarExcel()">Importar do Excel</button>
+    <button onclick="exportarExcel()">Exportar para Excel</button>
   </div>
 
   <script>
-    // Tabs
+    // --------- DADOS ---------
+    let manutencoes = [], stock = [], filtros = [], notas = [];
+
+    // --------- TABS ---------
     document.querySelectorAll(".tab").forEach(tab => {
       tab.addEventListener("click", () => {
         document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
@@ -123,202 +120,135 @@
       });
     });
 
-    function loadData(key) { return JSON.parse(localStorage.getItem(key)) || []; }
-    function saveData(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
-    function resetForm(formId) {
-      document.getElementById(formId).reset();
-      document.querySelector(`#${formId} input[type=hidden]`).value = "";
-      document.querySelectorAll("tr.selected").forEach(r => r.classList.remove("selected"));
-    }
-
-    // --------- NOVO ---------
-    function renderNovo() {
-      const dados = loadData("manutencoes");
-      const tbody = document.querySelector("#tabelaNovo tbody");
-      tbody.innerHTML = "";
-      dados.forEach((m, i) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${m.empresa}</td><td>${m.edificio}</td><td>${m.tipo}</td><td>${m.data}</td><td>${m.obs}</td>`;
-        tr.addEventListener("click", () => selecionarLinha(tr, "manutencoes", i, formNovo));
-        tbody.appendChild(tr);
-      });
-      document.getElementById("totalNovo").innerText = `Total de registos: ${dados.length}`;
-    }
-
-    const formNovo = document.getElementById("formNovo");
-    formNovo.addEventListener("submit", e => {
+    // --------- GUARDAR ---------
+    document.getElementById("formNovo").addEventListener("submit", e => {
       e.preventDefault();
-      let arr = loadData("manutencoes");
-      const i = indiceEditarNovo.value;
-      const obj = { empresa: empresa.value, edificio: edificio.value, tipo: tipo.value, data: dataManutencao.value, obs: obs.value };
-      if (i) arr[i] = obj; else arr.push(obj);
-      saveData("manutencoes", arr);
+      const idx = indiceEditarNovo.value;
+      const reg = { empresa: empresa.value, edificio: edificio.value, tipo: tipo.value, data: dataNovo.value, obs: obs.value };
+      if (idx) manutencoes[idx] = reg; else manutencoes.push(reg);
       renderNovo(); resetForm("formNovo");
     });
 
-    // --------- STOCK ---------
-    function renderStock() {
-      const dados = loadData("stock");
-      const tbody = document.querySelector("#tabelaStock tbody");
-      tbody.innerHTML = "";
-      dados.forEach((s, i) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${s.data}</td><td>${s.tipo}</td><td>${s.produto}</td><td>${s.quantidade}</td>`;
-        tr.addEventListener("click", () => selecionarLinha(tr, "stock", i, formStock));
-        tbody.appendChild(tr);
-      });
-      document.getElementById("totalStock").innerText = `Total de registos: ${dados.length}`;
-    }
-
-    const formStock = document.getElementById("formStock");
-    formStock.addEventListener("submit", e => {
+    document.getElementById("formStock").addEventListener("submit", e => {
       e.preventDefault();
-      let arr = loadData("stock");
-      const i = indiceEditarStock.value;
-      const obj = { data: dataStock.value, tipo: tipoStock.value, produto: produto.value, quantidade: quantidade.value };
-      if (i) arr[i] = obj; else arr.push(obj);
-      saveData("stock", arr);
+      const idx = indiceEditarStock.value;
+      const reg = { data: dataStock.value, tipo: tipoStock.value, produto: produto.value, quantidade: quantidade.value };
+      if (idx) stock[idx] = reg; else stock.push(reg);
       renderStock(); resetForm("formStock");
     });
 
-    // --------- NOTA ---------
-    function renderNota() {
-      const dados = loadData("notas");
-      const tbody = document.querySelector("#tabelaNota tbody");
-      tbody.innerHTML = "";
-      dados.forEach((n, i) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${n.texto}</td>`;
-        tr.addEventListener("click", () => selecionarLinha(tr, "notas", i, formNota));
-        tbody.appendChild(tr);
-      });
-      document.getElementById("totalNota").innerText = `Total de notas: ${dados.length}`;
+    document.getElementById("formFiltro").addEventListener("submit", e => {
+      e.preventDefault();
+      const idx = indiceEditarFiltro.value;
+      const reg = { empresa: empresaFiltro.value, edificio: edificioFiltro.value, data: dataFiltro.value };
+      if (idx) filtros[idx] = reg; else filtros.push(reg);
+      renderFiltro(); resetForm("formFiltro");
+    });
+
+    function guardarNota() {
+      const idx = indiceEditarNota.value;
+      if (idx) notas[idx] = textoNota.value; else notas.push(textoNota.value);
+      renderNota(); resetFormNota();
     }
 
-    const formNota = document.getElementById("formNota");
-    formNota.addEventListener("submit", e => {
-      e.preventDefault();
-      let arr = loadData("notas");
-      const i = indiceEditarNota.value;
-      const obj = { texto: textoNota.value };
-      if (i) arr[i] = obj; else arr.push(obj);
-      saveData("notas", arr);
-      renderNota(); resetForm("formNota");
-    });
+    // --------- RENDER ---------
+    function renderNovo() {
+      renderTabela("tabelaNovo", manutencoes, ["empresa","edificio","tipo","data","obs"], "totalNovo", "manutencoes", "formNovo");
+    }
+    function renderStock() {
+      renderTabela("tabelaStock", stock, ["data","tipo","produto","quantidade"], "totalStock", "stock", "formStock");
+    }
+    function renderFiltro() {
+      renderTabela("tabelaFiltro", filtros, ["empresa","edificio","data"], "totalFiltro", "filtros", "formFiltro");
+    }
+    function renderNota() {
+      const dados = notas.map(n => ({Nota: n}));
+      renderTabela("tabelaNotas", dados, ["Nota"], "totalNotas", "notas", "formNota");
+    }
+
+    function renderTabela(id, dados, campos, totalId, key, formId) {
+      const tbody = document.querySelector(`#${id} tbody`);
+      tbody.innerHTML = "";
+      dados.forEach((item, i) => {
+        const tr = document.createElement("tr");
+        campos.forEach(c => {
+          const td = document.createElement("td");
+          td.textContent = item[c] ?? "";
+          tr.appendChild(td);
+        });
+        tr.onclick = () => selecionarLinha(tr, key, i, document.getElementById(formId));
+        tbody.appendChild(tr);
+      });
+      document.getElementById(totalId).textContent = "Total: " + dados.length;
+    }
 
     // --------- SELEÇÃO ---------
     function selecionarLinha(tr, key, index, form) {
       document.querySelectorAll("tr.selected").forEach(r => r.classList.remove("selected"));
       tr.classList.add("selected");
-      const dados = loadData(key)[index];
+
+      let dados;
+      if (key === "manutencoes") dados = manutencoes[index];
+      if (key === "stock") dados = stock[index];
+      if (key === "filtros") dados = filtros[index];
+      if (key === "notas") dados = { Nota: notas[index] };
+
+      if (!dados) return;
+
       if (key === "manutencoes") {
         empresa.value = dados.empresa; edificio.value = dados.edificio; tipo.value = dados.tipo;
-        dataManutencao.value = dados.data; obs.value = dados.obs; indiceEditarNovo.value = index;
+        dataNovo.value = dados.data; obs.value = dados.obs; indiceEditarNovo.value = index;
       } else if (key === "stock") {
         dataStock.value = dados.data; tipoStock.value = dados.tipo; produto.value = dados.produto;
         quantidade.value = dados.quantidade; indiceEditarStock.value = index;
+      } else if (key === "filtros") {
+        empresaFiltro.value = dados.empresa; edificioFiltro.value = dados.edificio;
+        dataFiltro.value = dados.data; indiceEditarFiltro.value = index;
       } else if (key === "notas") {
-        textoNota.value = dados.texto; indiceEditarNota.value = index;
+        textoNota.value = dados.Nota; indiceEditarNota.value = index;
       }
+
       tr.ondblclick = () => {
         if (confirm("Apagar este registo?")) {
-          const arr = loadData(key); arr.splice(index, 1); saveData(key, arr);
-          if (key === "manutencoes") renderNovo();
-          if (key === "stock") renderStock();
-          if (key === "notas") renderNota();
-          aplicarFiltros();
+          if (key === "manutencoes") { manutencoes.splice(index,1); renderNovo(); }
+          if (key === "stock") { stock.splice(index,1); renderStock(); }
+          if (key === "filtros") { filtros.splice(index,1); renderFiltro(); }
+          if (key === "notas") { notas.splice(index,1); renderNota(); }
           resetForm(form.id);
         }
       };
     }
 
-    // --------- FILTROS ---------
-    function aplicarFiltros() {
-      const empresaF = filtroEmpresa.value.toLowerCase();
-      const edificioF = filtroEdificio.value.toLowerCase();
-      const dataF = filtroData.value;
-      const tbody = document.querySelector("#tabelaFiltros tbody");
-      tbody.innerHTML = "";
-      const filtrados = loadData("manutencoes").filter(m =>
-        (!empresaF || m.empresa.toLowerCase().includes(empresaF)) &&
-        (!edificioF || m.edificio.toLowerCase().includes(edificioF)) &&
-        (!dataF || m.data === dataF)
-      );
-      filtrados.forEach(m => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${m.empresa}</td><td>${m.edificio}</td><td>${m.tipo}</td><td>${m.data}</td><td>${m.obs}</td>`;
-        tbody.appendChild(tr);
-      });
-      document.getElementById("totalFiltros").innerText = `Total filtrado: ${filtrados.length}`;
-    }
-    function limparFiltros() { filtroEmpresa.value=""; filtroEdificio.value=""; filtroData.value=""; aplicarFiltros(); }
+    // --------- RESET ---------
+    function resetForm(id) { document.getElementById(id).reset(); document.querySelector(`#${id} input[type=hidden]`).value = ""; }
+    function resetFormNota() { textoNota.value = ""; indiceEditarNota.value = ""; }
 
     // --------- EXPORTAR ---------
     function exportarExcel() {
       const wb = XLSX.utils.book_new();
-      const m = loadData("manutencoes"), s = loadData("stock"), n = loadData("notas");
-      if (m.length>0) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(m), "Manutencoes");
-      if (s.length>0) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(s), "Stock");
-      if (n.length>0) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(n), "Notas");
-      XLSX.writeFile(wb, "registoManutencoes.xlsx");
+      if (manutencoes.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(manutencoes), "Manutencoes");
+      if (stock.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(stock), "Stock");
+      if (filtros.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(filtros), "Filtros");
+      if (notas.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(notas.map(n => ({Nota: n}))), "Notas");
+      XLSX.writeFile(wb, "dados.xlsx");
     }
 
-    // Inicialização
-    renderNovo(); renderStock(); renderNota(); aplicarFiltros();
-
-    function abrirLink() {
-      // coloca aqui o link do Excel
-      const url = "https://1drv.ms/x/c/2863be5604cde3e6/EWgiEUczPRxAiCgZyF0AxKcBQOSv-FJAVMakR6LuGYC_Vg?e=bylhfg";
-      window.open(url, "_blank"); // abre numa nova aba
-    }
-
-    function openLink() {
-      // coloca aqui o link do Excel
-      const url = "https://1drv.ms/x/c/2863be5604cde3e6/EcYHIppYro1EhTRyVpXDPi4BwXYek8uma0NTSPPvnEkR6A?e=pmZwtU";
-      window.open(url, "_blank"); // abre numa nova aba
-    }
-
+    // --------- IMPORTAR ---------
     function importarExcel() {
-      const fileInput = document.getElementById("inputExcel");
-      const file = fileInput.files[0];
-      if (!file) {
-        alert("Por favor selecione um ficheiro Excel.");
-        return;
-      }
-
+      const file = document.getElementById("inputExcel").files[0];
+      if (!file) { alert("Escolha um ficheiro Excel."); return; }
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = e => {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: "array" });
-
-        // Carregar cada folha, se existir
-        if (workbook.Sheets["Manutencoes"]) {
-          manutencoes = XLSX.utils.sheet_to_json(workbook.Sheets["Manutencoes"]);
-          renderTabela("tabelaNovo", manutencoes, ["empresa","edificio","tipo","data","obs"], "totalNovo");
-        }
-
-        if (workbook.Sheets["Stock"]) {
-          stock = XLSX.utils.sheet_to_json(workbook.Sheets["Stock"]);
-          renderTabela("tabelaStock", stock, ["data","tipo","produto","quantidade"], "totalStock");
-        }
-
-        if (workbook.Sheets["Filtros"]) {
-          filtros = XLSX.utils.sheet_to_json(workbook.Sheets["Filtros"]);
-          renderTabela("tabelaFiltro", filtros, ["empresa","edificio","data"], "totalFiltro");
-        }
-
-        if (workbook.Sheets["Notas"]) {
-          const rows = XLSX.utils.sheet_to_json(workbook.Sheets["Notas"]);
-          notas = rows.map(r => r.Nota); // só precisa do texto
-          renderTabela("tabelaNotas", notas.map(n => ({Nota: n})), ["Nota"], "totalNotas");
-        }
-
-        alert("Dados importados com sucesso!");
+        if (workbook.Sheets["Manutencoes"]) { manutencoes = XLSX.utils.sheet_to_json(workbook.Sheets["Manutencoes"]); renderNovo(); }
+        if (workbook.Sheets["Stock"]) { stock = XLSX.utils.sheet_to_json(workbook.Sheets["Stock"]); renderStock(); }
+        if (workbook.Sheets["Filtros"]) { filtros = XLSX.utils.sheet_to_json(workbook.Sheets["Filtros"]); renderFiltro(); }
+        if (workbook.Sheets["Notas"]) { const rows = XLSX.utils.sheet_to_json(workbook.Sheets["Notas"]); notas = rows.map(r => r.Nota); renderNota(); }
+        alert("Dados importados!");
       };
       reader.readAsArrayBuffer(file);
     }
-
   </script>
 </body>
-<footer style="text-align: right; font-weight: bold; margin-top: 10px; font-size: 14px; font-family: cursive;">Rui Baptista</footer>
 </html>
