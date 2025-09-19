@@ -25,9 +25,15 @@
       background-color: grey;
     }
     .total { margin-top: 8px; font-weight: bold; text-align: right;}
+    header {
+      text-align: right;
+    }
   </style>
 </head>
 <body>
+  <header>
+    <img src="c:\users\i3Bs\Desktop\Exemplo\3bs.jpeg">
+  </header>
   <h1>Gestão de Manutenções</h1>
 
   <!-- Separadores -->
@@ -51,6 +57,7 @@
       <label>Observações: <input type="text" id="obs"></label>
       <button type="submit">Guardar</button>
       <button type="button" onclick="resetForm('formNovo')">Cancelar</button>
+      <button type="button" onclick="abrirLink()"> Manutenção Preventiva</button>
     </form>
     <table id="tabelaNovo"><thead><tr><th>Empresa</th><th>Edifício</th><th>Tipo</th><th>Data</th><th>Obs</th></tr></thead><tbody></tbody></table>
     <div id="totalNovo" class="total"></div>
@@ -67,23 +74,23 @@
       <label>Quantidade: <input type="number" id="quantidade" required></label>
       <button type="submit">Guardar</button>
       <button type="button" onclick="resetForm('formStock')">Cancelar</button>
+      <button type="button" onclick="openLink()"> Stock UTAs/VCs</button>
     </form>
     <table id="tabelaStock"><thead><tr><th>Data</th><th>Tipo</th><th>Produto</th><th>Qtd</th></tr></thead><tbody></tbody></table>
     <div id="totalStock" class="total"></div>
   </div>
 
   <!-- Filtros -->
-  <div class="content" id="filtros">
+   <div class="content" id="filtros">
     <h2>Filtros</h2>
     <form id="formFiltro">
-      <input type="hidden" id="indiceEditarFiltro">
-      <label>Empresa: <input type="text" id="empresaFiltro" required></label>
-      <label>Edifício: <input type="text" id="edificioFiltro" required></label>
-      <label>Data: <input type="date" id="dataFiltro" required></label>
-      <button type="submit">Guardar</button>
-      <button type="button" onclick="resetForm('formFiltro')">Cancelar</button>
+      <label>Empresa:<input type="text" id="empresaFiltro"></label>
+      <label>Edifício:<input type="text" id="edificioFiltro"></label>
+      <label>Data:<input type="date" id="dataFiltro"></label>
+      <button type="submit">Aplicar</button>
+      <button type="button" onclick="limparFiltros()">Cancelar</button>
     </form>
-    <table id="tabelaFiltro"><thead><tr><th>Empresa</th><th>Edifício</th><th>Data</th></tr></thead><tbody></tbody></table>
+    <table id="tabelaFiltro"><thead><tr><th>Empresa</th><th>Edifício</th><th>Tipo</th><th>Data</th><th>Obs</th></tr></thead><tbody></tbody></table>
     <div id="totalFiltro" class="total"></div>
   </div>
 
@@ -94,7 +101,7 @@
     <textarea id="textoNota" rows="4" cols="247"></textarea><br>
     <button onclick="guardarNota()">Guardar Nota</button>
     <button onclick="resetFormNota()">Cancelar</button>
-    <table id="tabelaNotas"><thead><tr><th>Nota</th></tr></thead><tbody></tbody></table>
+    <table id="tabelaNotas"><thead><tr><th>Notas</th></tr></thead><tbody></tbody></table>
     <div id="totalNotas" class="total"></div>
   </div>
 
@@ -105,10 +112,9 @@
     <button onclick="importarExcel()">Importar do Excel</button>
     <button onclick="exportarExcel()">Exportar para Excel</button>
   </div>
-
   <script>
     // --------- DADOS ---------
-    let manutencoes = [], stock = [], filtros = [], notas = [];
+    let manutencoes = [], stock = [], notas = [];
 
     // --------- TABS ---------
     document.querySelectorAll(".tab").forEach(tab => {
@@ -139,12 +145,10 @@
 
     document.getElementById("formFiltro").addEventListener("submit", e => {
       e.preventDefault();
-      const idx = indiceEditarFiltro.value;
-      const reg = { empresa: empresaFiltro.value, edificio: edificioFiltro.value, data: dataFiltro.value };
-      if (idx) filtros[idx] = reg; else filtros.push(reg);
-      renderFiltro(); resetForm("formFiltro");
+      aplicarFiltros();
     });
 
+    
     function guardarNota() {
       const idx = indiceEditarNota.value;
       if (idx) notas[idx] = textoNota.value; else notas.push(textoNota.value);
@@ -158,12 +162,31 @@
     function renderStock() {
       renderTabela("tabelaStock", stock, ["data","tipo","produto","quantidade"], "totalStock", "stock", "formStock");
     }
-    function renderFiltro() {
-      renderTabela("tabelaFiltro", filtros, ["empresa","edificio","data"], "totalFiltro", "filtros", "formFiltro");
-    }
+
     function renderNota() {
       const dados = notas.map(n => ({Nota: n}));
       renderTabela("tabelaNotas", dados, ["Nota"], "totalNotas", "notas", "formNota");
+    }
+
+    function aplicarFiltros() {
+      const empresaVal = empresaFiltro.value.trim().toLowerCase();
+      const edificioVal = edificioFiltro.value.trim().toLowerCase();
+      const dataVal = dataFiltro.value;
+
+      // Filtra as manutenções
+      let resultados = manutencoes.filter(m => {
+        return (!empresaVal || m.empresa.toLowerCase().includes(empresaVal)) &&
+               (!edificioVal || m.edificio.toLowerCase().includes(edificioVal)) &&
+               (!dataVal || m.data === dataVal);
+      });
+
+      renderTabela("tabelaFiltro", resultados, ["empresa","edificio","tipo","data","obs"], "totalFiltro", "manutencoes", "formFiltro");
+    }
+
+
+    function limparFiltros() {
+      document.getElementById("formFiltro").reset();
+      renderTabela("tabelaFiltro", manutencoes, ["empresa","edificio","tipo","data","obs"], "totalFiltro", "manutencoes", "formNovo");
     }
 
     function renderTabela(id, dados, campos, totalId, key, formId) {
@@ -179,7 +202,7 @@
         tr.onclick = () => selecionarLinha(tr, key, i, document.getElementById(formId));
         tbody.appendChild(tr);
       });
-      document.getElementById(totalId).textContent = "Total: " + dados.length;
+      document.getElementById(totalId).textContent = "Total de registos: " + dados.length;
     }
 
     // --------- SELEÇÃO ---------
@@ -249,6 +272,19 @@
       };
       reader.readAsArrayBuffer(file);
     }
+
+    function abrirLink() {
+      // coloca aqui o link do Excel
+      const url = "https://1drv.ms/x/c/2863be5604cde3e6/EWgiEUczPRxAiCgZyF0AxKcBQOSv-FJAVMakR6LuGYC_Vg?e=bylhfg";
+      window.open(url, "_blank"); // abre numa nova aba
+    }
+
+    function openLink() {
+      // coloca aqui o link do Excel
+      const url = "https://1drv.ms/x/c/2863be5604cde3e6/EcYHIppYro1EhTRyVpXDPi4BwXYek8uma0NTSPPvnEkR6A?e=pmZwtU";
+      window.open(url, "_blank"); // abre numa nova aba
+    }
   </script>
 </body>
+<footer style="text-align: right; font-weight: bold; margin-top: 10px; font-size: 14px; font-family: cursive;">Rui Baptista</footer>
 </html>
