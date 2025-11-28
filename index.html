@@ -5,15 +5,19 @@
   <title>Gestão de Manutenções</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #daf0f5; background-image: url("avac.jpg");}
-    h2 { margin-top: 0; }
+    body { font-family: Arial, sans-serif; padding: 20px; background-image: url("avac.jpg");}
+    h2 { 
+      margin-top: 0; 
+      color: red;
+      font-family: Candara ;
+    }
     .tabs { display: flex; margin-bottom: 15px; flex-wrap: wrap; }
     .tab { flex: 1; padding: 10px; text-align: center; background: #ddd; cursor: pointer; border-radius: 15px 15px 0 10px; }
-    .tab.active { background: grey; font-weight: bold; border-bottom: 2px solid #fff; }
+    .tab.active { background: lightblue; font-weight: bold; border-bottom: 2px solid #fff; }
     .content { display: none; background: #fff; padding: 15px; border-radius: 0 5px 5px 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-    .content.active { display: block; }
+    .content.active { display: block; background: #FFFAFA;}
     form label { display: block; margin: 8px 0 4px; }
-    form input, form select, form textarea { width: 100%; padding: 6px; }
+    form input, form select, form textarea { width: 100%; padding: 6px;}
     button { margin: 8px 5px 0 0; padding: 6px 12px; cursor: pointer; }
     table { width: 100%; border-collapse: collapse; margin-top: 15px; }
     td { border: 1px solid #aaa; padding: 6px; text-align: left; }
@@ -32,17 +36,17 @@
 </head>
 <body>
   <header>
-    <img src="c:\users\i3Bs\Desktop\Exemplo\3bs.jpeg">
+    <img src="C:\Users\i3Bs\OneDrive\Aplicações\Registo_Manutenções\3bs.jpeg" style="width: 100px; height: 75px;">
   </header>
-  <h1>Gestão de Manutenções</h1>
+  <h1>Registos</h1>
 
   <!-- Separadores -->
   <div class="tabs">
-    <div class="tab active" data-tab="novo">Novo Registo</div>
-    <div class="tab" data-tab="stock">Stock Material</div>
-    <div class="tab" data-tab="filtros">Filtros</div>
-    <div class="tab" data-tab="notas">Notas</div>
-    <div class="tab" data-tab="excel">Importar / Exportar Excel</div>
+    <button class="tab active" data-tab="novo">🛠️ Novo</button>
+    <button class="tab" data-tab="stock">📦 Stock</button>
+    <button class="tab" data-tab="filtros">🔍 Filtros</button>
+    <button class="tab" data-tab="notas">📝 Notas</button>
+    <button class="tab" data-tab="excel">🛠️ Importar Excel</button>
   </div>
 
   <!-- Novo Registo -->
@@ -58,6 +62,7 @@
       <button type="submit">Guardar</button>
       <button type="button" onclick="resetForm('formNovo')">Cancelar</button>
       <button type="button" onclick="abrirLink()"> Manutenção Preventiva</button>
+      <button onclick="exportarExcel()">Exportar para Excel</button>
     </form>
     <table id="tabelaNovo"><thead><tr><th>Empresa</th><th>Edifício</th><th>Tipo</th><th>Data</th><th>Obs</th></tr></thead><tbody></tbody></table>
     <div id="totalNovo" class="total"></div>
@@ -98,7 +103,7 @@
   <div class="content" id="notas">
     <h2>Notas</h2>
     <input type="hidden" id="indiceEditarNota">
-    <textarea id="textoNota" rows="4" cols="247"></textarea><br>
+    <textarea id="textoNota" rows="4" cols="181" style="font-size: 18px;"></textarea><br>
     <button onclick="guardarNota()">Guardar Nota</button>
     <button onclick="resetFormNota()">Cancelar</button>
     <table id="tabelaNotas"><thead><tr><th>Notas</th></tr></thead><tbody></tbody></table>
@@ -110,7 +115,6 @@
     <h2>Importar / Exportar Excel</h2>
     <input type="file" id="inputExcel" accept=".xlsx,.xls" />
     <button onclick="importarExcel()">Importar do Excel</button>
-    <button onclick="exportarExcel()">Exportar para Excel</button>
   </div>
   <script>
     // --------- DADOS ---------
@@ -253,7 +257,7 @@
       if (stock.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(stock), "Stock");
       if (filtros.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(filtros), "Filtros");
       if (notas.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(notas.map(n => ({Nota: n}))), "Notas");
-      XLSX.writeFile(wb, "dados.xlsx");
+      XLSX.writeFile(wb, "registoManutencoes.xlsx");
     }
 
     // --------- IMPORTAR ---------
@@ -286,7 +290,6 @@
     }
   </script>
 </body>
-<footer style="text-align: right; font-weight: bold; margin-top: 10px; font-size: 14px; font-family: cursive;">Rui Baptista</footer>
+<footer style="text-align: right; margin-top: 10px; font-size: 24px; font-family: Brush Script MT; color: blue;">Rui Baptista</footer>
+<footer style="text-align: right; margin-top: 10px; font-size: 24px; font-family: Brush Script MT; color: red;">2025</footer>
 </html>
-
-
