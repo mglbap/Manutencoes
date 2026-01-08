@@ -36,7 +36,7 @@
 </head>
 <body>
   <header>
-    <img src="3bs.jpeg" style="width: 100px; height: 75px;">
+    <img src="C:\Users\i3Bs\OneDrive\Aplicações\Registo_Manutenções\3bs.jpeg" style="width: 125px; height: 100px;">
   </header>
   <h1>Registos</h1>
 
@@ -62,7 +62,8 @@
       <button type="submit">Guardar</button>
       <button type="button" onclick="resetForm('formNovo')">Cancelar</button>
       <button type="button" onclick="abrirLink()"> Manutenção Preventiva</button>
-      <button onclick="exportarExcel()">Exportar para Excel</button>
+      <button type="button" onclick="abrirLink2()"> Impressoras</button>
+      <button onclick="exportarExcel()">Exportar para Excel</button>    
     </form>
     <table id="tabelaNovo"><thead><tr><th>Empresa</th><th>Edifício</th><th>Tipo</th><th>Data</th><th>Obs</th></tr></thead><tbody></tbody></table>
     <div id="totalNovo" class="total"></div>
@@ -106,6 +107,8 @@
     <textarea id="textoNota" rows="4" cols="181" style="font-size: 18px;"></textarea><br>
     <button onclick="guardarNota()">Guardar Nota</button>
     <button onclick="resetFormNota()">Cancelar</button>
+    <button type="button" onclick="openLink2()"> Tarefas</button>
+    <button type="button" onclick="openLink3()"> Planta</button>
     <table id="tabelaNotas"><thead><tr><th>Notas</th></tr></thead><tbody></tbody></table>
     <div id="totalNotas" class="total"></div>
   </div>
@@ -278,16 +281,35 @@
     }
 
     function abrirLink() {
-      // coloca aqui o link do Excel
+      // coloca aqui o link da Manutenção Preventiva
       const url = "https://1drv.ms/x/c/2863be5604cde3e6/EWgiEUczPRxAiCgZyF0AxKcBQOSv-FJAVMakR6LuGYC_Vg?e=bylhfg";
       window.open(url, "_blank"); // abre numa nova aba
     }
 
+    function abrirLink2() {
+      // coloca aqui o link das Impressoras
+      const url = "https://uminho365-my.sharepoint.com/:x:/r/personal/f14491_uminho_pt/_layouts/15/Doc.aspx?sourcedoc=%7B1371FA4C-2ED3-4EF2-A040-28CDF1332D38%7D&file=Impressoras.xlsx&action=default&mobileredirect=true";
+      window.open(url, "_blank"); // abre numa nova aba
+    }
+
     function openLink() {
-      // coloca aqui o link do Excel
+      // coloca aqui o link do Controle de Stocks
       const url = "https://1drv.ms/x/c/2863be5604cde3e6/EcYHIppYro1EhTRyVpXDPi4BwXYek8uma0NTSPPvnEkR6A?e=pmZwtU";
       window.open(url, "_blank"); // abre numa nova aba
     }
+
+    function openLink2() {
+      // coloca aqui o link dos Pendentes
+      const url = "https://uminho365-my.sharepoint.com/:x:/r/personal/f14491_uminho_pt/_layouts/15/Doc.aspx?sourcedoc=%7BC7742C00-AF9F-4A16-8659-74BEF5A4063C%7D&file=Lista_de_Pendentes.xlsx&action=default&mobileredirect=true";
+      window.open(url, "_blank"); // abre numa nova aba
+    }
+
+    function openLink3() {
+      // coloca aqui o link da Planta
+      const url = "https://uminho365-my.sharepoint.com/my?viewid=8d5fabc0%2D2c0b%2D4ca0%2D9de0%2D81323a91323a&CT=1747040050901&OR=OWA%2DNT%2DMail&e=5%3A67e88637854b44048575e7a6a30d48c3&sharingv2=true&fromShare=true&at=9&FolderCTID=0x01200065B8B3FF27D6AB49A2FD2D662C8E3545&id=%2Fpersonal%2Ff14491%5Fuminho%5Fpt%2FDocuments%2FPlantaAR%2Epdf&parent=%2Fpersonal%2Ff14491%5Fuminho%5Fpt%2FDocuments";
+      window.open(url, "_blank"); // abre numa nova aba
+    }
+    
   </script>
 </body>
 <footer style="text-align: right; margin-top: 10px; font-size: 24px; font-family: Brush Script MT; color: blue;">Rui Baptista</footer>
